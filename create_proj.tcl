@@ -61,7 +61,7 @@ if {[string equal [get_filesets -quiet sim_1] ""]} {
 }
 # Add simulation files
 add_files -fileset sim_1 -norecurse -scan_for_includes ./sim
-import_files -fileset sim_1 -norecurse ./sim
+#import_files -fileset sim_1 -norecurse ./sim
 
 set design_name 	$BD_name
 
