@@ -51,17 +51,6 @@ variable script_folder
 set script_folder [_tcl::get_script_folder]
 
 ################################################################
-# Check if script is running in correct Vivado version.
-################################################################
-set scripts_vivado_version "2019.2"
-set current_vivado_version [version -short]
- 
-if { [string first $current_vivado_version $scripts_vivado_version] == -1 } {
-   puts "The version $current_vivado_version is not supported. Supported versions are $scripts_vivado_version"
-   return 1
-}
-
-################################################################
 # START
 ################################################################
 variable design_name
