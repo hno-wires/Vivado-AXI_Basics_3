@@ -55,7 +55,8 @@
 //                  
 //-----------------------------------------------------------------------------
 //Step 2 - Import two required packages: axi_vip_pkg and <component_name>_pkg.
-
+import axi_vip_pkg::*;
+import AXI_GPIO_Sim_axi_vip_0_0_pkg::*;
 
 //////////////////////////////////////////////////////////////////////////////////
 // Test Bench Signals
@@ -99,15 +100,16 @@ end
 //////////////////////////////////////////////////////////////////////////////////
 //
 // Step 3 - Declare the agent for the master VIP
+AXI_GPIO_Sim_axi_vip_0_0_mst_t      master_agent;
 
 //
 initial begin    
 
     // Step 4 - Create a new agent
-    
+    master_agent = new("master vip agent",UUT.AXI_GPIO_Sim_i.axi_vip_0.inst.IF);
     
     // Step 5 - Start the agent
-    
+    master_agent.start_master();
     
     //Wait for the reset to be released
     wait (aresetn == 1'b1);
@@ -115,22 +117,43 @@ initial begin
 	
     
     //Send 0x1 to the AXI GPIO Data register 1
-    
-    
-    
-    
+    #500ns
+    addr = 0;
+    data = 1;
+    master_agent.AXI4LITE_WRITE_BURST(base_addr + addr,0,data,resp);
     
     //Send 0x0 to the AXI GPIO Data register 1
-	
+	#200ns
+    addr = 0;
+    data = 0;
+    master_agent.AXI4LITE_WRITE_BURST(base_addr + addr,0,data,resp);
+
     // Switch in OFF position
     switch_1 = 0;
+
     // Read the AXI GPIO Data register 2
+    #200ns
+    addr = 8;
+    master_agent.AXI4LITE_READ_BURST(base_addr + addr,0,data,resp);
+    switch_state = data&1'h1;
+    if(switch_state == 0)
+        $display("switch 1 OFF");
+    else
+        $display("switch 1 ON");
 	
     // Switch in ON position
 	switch_1 = 1;
-	// Read the AXI GPIO Data register 2
-	
 
+	// Read the AXI GPIO Data register 2
+    #200ns
+    addr = 8;
+    master_agent.AXI4LITE_READ_BURST(base_addr + addr,0,data,resp);
+    switch_state = data&1'h1;
+    if(switch_state == 0)
+        $display("switch 1 OFF");
+    else
+        $display("switch 1 ON");
+	
 end
 //
 //////////////////////////////////////////////////////////////////////////////////
